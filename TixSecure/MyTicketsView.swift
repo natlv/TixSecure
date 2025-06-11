@@ -20,14 +20,14 @@ class TicketViewModel: NSObject, ObservableObject {
         tickets = [
             Ticket(
                 id: "t1",
-                event: Event(id: "e1", title: "Keshi 2025", date: Date(), price: 180),
+                event: Event(id: "e1", title: "Keshi 2025", date: Date(), price: 180, imageName: "keshi", category: "Concert"),
                 seat: "A272",
                 date: Date(),
                 isCheckedIn: false
             ),
             Ticket(
                 id: "t2",
-                event: Event(id: "e2", title: "Requiem World Tour", date: Date().addingTimeInterval(86400*3), price: 200),
+                event: Event(id: "e2", title: "Requiem World Tour", date: Date().addingTimeInterval(86400*3), price: 200, imageName: "keshi", category: "Concert"),
                 seat: "B101",
                 date: Date().addingTimeInterval(86400*3),
                 isCheckedIn: true

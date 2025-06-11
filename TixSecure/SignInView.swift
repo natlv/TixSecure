@@ -8,7 +8,7 @@ struct SignInView: View {
     @State private var password: String = ""
     
     var body: some View {
-            VStack(spacing: 10) {
+            VStack(spacing: 15) {
                 // Logo and branding
                 Image("TixSecure")
                     .resizable()
