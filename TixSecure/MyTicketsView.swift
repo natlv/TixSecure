@@ -10,10 +10,12 @@ struct Ticket: Codable, Identifiable {
     let isCheckedIn: Bool
 }
 
-class TicketViewModel: ObservableObject {
+class TicketViewModel: NSObject, ObservableObject {
     @Published var tickets: [Ticket] = []
+    @Published var showDemoNFCAlert: Bool = false
+    private var ticketBeingCheckedIn: Ticket?
     
-    init() {
+    override init() {
         // demo data
         tickets = [
             Ticket(
@@ -40,14 +42,53 @@ class TicketViewModel: ObservableObject {
     func resell(ticket: Ticket, price: Double) {
         // to implement
     }
+    
+    func completeDemoCheckIn(with data: String) {
+        print("✅ Completing DEMO check-in with NFC data: \(data)")
+
+        if let ticket = ticketBeingCheckedIn {
+            if let index = tickets.firstIndex(where: { $0.id == ticket.id }) {
+                tickets[index] = Ticket(
+                    id: tickets[index].id,
+                    event: tickets[index].event,
+                    seat: tickets[index].seat,
+                    date: tickets[index].date,
+                    isCheckedIn: true
+                )
+                print("🎉 Ticket \(tickets[index].id) marked as checked in")
+            }
+        } else {
+            // Fallback: just check in first unchecked ticket (demo mode)
+            if let index = tickets.firstIndex(where: { !$0.isCheckedIn }) {
+                tickets[index] = Ticket(
+                    id: tickets[index].id,
+                    event: tickets[index].event,
+                    seat: tickets[index].seat,
+                    date: tickets[index].date,
+                    isCheckedIn: true
+                )
+                print("🎉 Ticket \(tickets[index].id) marked as checked in")
+            } else {
+                print("⚠️ All tickets already checked in")
+            }
+        }
+
+        ticketBeingCheckedIn = nil
+        showDemoNFCAlert = false
+    }
+
+
 
     func checkIn(ticket: Ticket) {
-        // to implement
+        print("▶️ Armed check-in for ticket \(ticket.id)")
+        ticketBeingCheckedIn = ticket
+        showDemoNFCAlert = true
     }
 }
 
+
 struct MyTicketsView: View {
-    @StateObject private var vm = TicketViewModel()
+    @ObservedObject var vm: TicketViewModel
     @State private var ticketToResell: Ticket?
 
     var body: some View {
@@ -70,6 +111,13 @@ struct MyTicketsView: View {
         }
         .sheet(item: $ticketToResell) { ticket in
             ResellView(ticket: ticket)
+        }
+        .alert(isPresented: $vm.showDemoNFCAlert) {
+            Alert(
+                    title: Text("Ready to Check In"),
+                    message: Text("Hold Near Reader"),
+                    dismissButton: .default(Text("OK"))
+            )
         }
     }
 }

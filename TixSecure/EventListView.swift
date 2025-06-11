@@ -55,27 +55,69 @@ struct EventCardView: View {
     }
 }
 
+//struct EventListView: View {
+//    @EnvironmentObject var authVM: AuthViewModel
+//    @StateObject private var vm = EventViewModel()
+//    var body: some View {
+//        NavigationView {
+//            ScrollView {
+//                LazyVStack(spacing: 16) {
+//                    ForEach(vm.events) { event in
+//                        NavigationLink(
+//                            destination: TicketSelectionView(event: event)
+//                                .environmentObject(authVM)
+//                        ) {
+//                            EventCardView(event: event)
+//                                .padding(.horizontal)
+//                        }
+//                    }
+//                }
+//                .padding(.vertical)
+//            }
+//            .navigationTitle("Events")
+//            .onAppear { vm.fetchEvents() }
+//        }
+//    }
+//}
+
 struct EventListView: View {
     @EnvironmentObject var authVM: AuthViewModel
     @StateObject private var vm = EventViewModel()
+
     var body: some View {
-        NavigationView {
-            ScrollView {
-                LazyVStack(spacing: 16) {
-                    ForEach(vm.events) { event in
-                        NavigationLink(
-                            destination: TicketSelectionView(event: event)
-                                .environmentObject(authVM)
-                        ) {
-                            EventCardView(event: event)
-                                .padding(.horizontal)
+        NavigationStack {
+            ZStack {
+                Color(.systemGroupedBackground)
+                    .ignoresSafeArea() // background fills full screen
+
+                VStack(spacing: 0) {
+                    // Manual title if you want it
+                    Text("Events")
+                        .font(.largeTitle)
+                        .bold()
+                        .padding(.top, 16)
+
+                    ScrollView {
+                        LazyVStack(spacing: 16) {
+                            ForEach(vm.events) { event in
+                                NavigationLink(
+                                    destination: TicketSelectionView(event: event)
+                                        .environmentObject(authVM)
+                                ) {
+                                    EventCardView(event: event)
+                                        .frame(maxWidth: .infinity)
+                                        .padding(.horizontal)
+                                }
+                            }
                         }
+                        .padding(.vertical)
+                        .ignoresSafeArea(edges: .bottom) // bottom safe area
                     }
                 }
-                .padding(.vertical)
             }
-            .navigationTitle("Events")
+            .toolbar(.hidden, for: .navigationBar) // still hide nav bar
             .onAppear { vm.fetchEvents() }
         }
+        .ignoresSafeArea()
     }
 }
