@@ -5,7 +5,7 @@ import _AuthenticationServices_SwiftUI
 struct SignInView: View {
     @EnvironmentObject var authVM: AuthViewModel
     var body: some View {
-        VStack(spacing: 1) {
+        VStack(spacing: 25) {
             Text("Sign in to TixSecure").font(.largeTitle)
             
 //            SignInWithAppleButton(

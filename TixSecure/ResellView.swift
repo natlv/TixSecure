@@ -5,7 +5,9 @@ struct ResellView: View {
     @State private var price: String = ""
     @Environment(\.presentationMode) var mode
     @State private var showConfirmation = false
+    @State private var isVerifying = true
 
+    
     var body: some View {
         VStack(spacing: 16) {
             // Back button
@@ -19,14 +21,23 @@ struct ResellView: View {
             .padding()
 
             // NFT Verification Banner
-            Text("NFT Ticket Verified!")
+            Text(isVerifying ? "Verifying Ticket..." : "NFT Ticket Verified!")
                 .font(.headline)
                 .padding()
                 .frame(maxWidth: .infinity)
-                .background(Color("BadgePurple"))
+                .background(isVerifying ? Color.blue.opacity(0.8) : Color("BadgePurple"))
                 .foregroundColor(.white)
                 .cornerRadius(8)
                 .padding(.horizontal)
+                .onAppear {
+                    // Start in verifying state
+                    isVerifying = true
+                    // After 3 seconds, switch to verified state
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                        isVerifying = false
+                    }
+                }
+
 
             // Ticket card
             VStack(alignment: .leading, spacing: 8) {
@@ -56,6 +67,7 @@ struct ResellView: View {
             }
             .buttonStyle(.borderedProminent)
             .padding(.horizontal)
+            .disabled(price.isEmpty || isVerifying)
 
             Spacer()
         }

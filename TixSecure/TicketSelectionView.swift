@@ -7,10 +7,10 @@ struct TicketSelectionView: View {
     @State private var selectedOption: TicketOption? = nil
     
     let options: [TicketOption] = [ // demo data
-        .init(id: "1", name: "Bob Dover", price: 160, date: Date(), category: "Cat B"),
-        .init(id: "2", name: "Catherine Fly", price: 170, date: Date(), category: "Cat C"),
-        .init(id: "3", name: "Donovan Guy", price: 180, date: Date(), category: "Cat A"),
-        .init(id: "4", name: "Elijah Hill", price: 180, date: Date(), category: "Cat B")
+        .init(id: "avail-1", name: "Bob Dover", price: 160, date: Date(), category: "Cat B"),
+        .init(id: "avail-2", name: "Catherine Fly", price: 170, date: Date(), category: "Cat C"),
+        .init(id: "avail-3", name: "Donovan Guy", price: 180, date: Date(), category: "Cat A"),
+        .init(id: "avail-4", name: "Elijah Hill", price: 180, date: Date(), category: "Cat B")
     ]
     
     var body: some View {

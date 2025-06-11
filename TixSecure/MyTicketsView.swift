@@ -55,6 +55,7 @@ class TicketViewModel: NSObject, ObservableObject {
                     date: tickets[index].date,
                     isCheckedIn: true
                 )
+                updateBackendCheckIn(ticketId: tickets[index].id)
                 print("🎉 Ticket \(tickets[index].id) marked as checked in")
             }
         } else {
@@ -67,6 +68,7 @@ class TicketViewModel: NSObject, ObservableObject {
                     date: tickets[index].date,
                     isCheckedIn: true
                 )
+                updateBackendCheckIn(ticketId: tickets[index].id)
                 print("🎉 Ticket \(tickets[index].id) marked as checked in")
             } else {
                 print("⚠️ All tickets already checked in")
@@ -75,6 +77,7 @@ class TicketViewModel: NSObject, ObservableObject {
 
         ticketBeingCheckedIn = nil
         showDemoNFCAlert = false
+        
     }
 
 
@@ -84,6 +87,30 @@ class TicketViewModel: NSObject, ObservableObject {
         ticketBeingCheckedIn = ticket
         showDemoNFCAlert = true
     }
+    
+    func updateBackendCheckIn(ticketId: String) {
+        guard let url = URL(string: "http://192.168.0.125:3000/check-in") else { return }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        let body: [String: Any] = [
+            "ticketId": ticketId
+        ]
+        request.httpBody = try? JSONSerialization.data(withJSONObject: body)
+
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let data = data,
+               let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+               let success = json["success"] as? Bool, success == true {
+                print("✅ Backend check-in updated for ticketId \(ticketId)")
+            } else {
+                print("❌ Failed to update backend check-in for ticketId \(ticketId)")
+            }
+        }.resume()
+    }
+
 }
 
 
@@ -167,3 +194,4 @@ struct TicketCardView: View {
         }
     }
 }
+
